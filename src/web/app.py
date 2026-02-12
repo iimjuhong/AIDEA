@@ -33,7 +33,7 @@ roi_manager = None
 _latest_roi_counts = {}
 _inference_thread = None
 
-_TARGET_FPS = 15
+_TARGET_FPS = 30
 
 
 # --- FrameBuffer: Inference → Network 사이 논블로킹 버퍼 ---
@@ -83,17 +83,22 @@ _frame_buf = FrameBuffer()
 
 # --- init ---
 
-def init_app(camera_manager, detector_instance=None, roi_manager_instance=None):
+def init_app(camera_manager, detector_instance=None, roi_manager_instance=None,
+             inference_fps=None):
     """Flask 앱에 카메라/검출기/ROI 매니저 연결 후 Inference 스레드 시작"""
-    global camera, detector, roi_manager, _inference_thread
+    global camera, detector, roi_manager, _inference_thread, _TARGET_FPS
     camera = camera_manager
     detector = detector_instance
     roi_manager = roi_manager_instance
 
+    if inference_fps is not None:
+        _TARGET_FPS = inference_fps
+        logger.info(f"Inference FPS 설정: {_TARGET_FPS}")
+
     if _inference_thread is None:
         _inference_thread = threading.Thread(target=_inference_loop, daemon=True)
         _inference_thread.start()
-        logger.info("Inference 스레드 시작")
+        logger.info(f"Inference 스레드 시작 (target={_TARGET_FPS}fps)")
 
 
 # --- Thread 2: Inference Loop ---
@@ -172,9 +177,10 @@ def generate_frames():
     - 와이파이 끊김 → 이 generator만 멈춤, Inference는 계속 동작
     """
     last_id = 0
+    frame_timeout = max(1.0 / _TARGET_FPS * 3, 0.5)  # 3프레임 대기, 최소 0.5초
     try:
         while True:
-            jpeg, last_id = _frame_buf.get(prev_id=last_id, timeout=1.0)
+            jpeg, last_id = _frame_buf.get(prev_id=last_id, timeout=frame_timeout)
             if jpeg is None:
                 # 타임아웃 — 아직 프레임 없음, 재시도
                 continue

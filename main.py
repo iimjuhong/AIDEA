@@ -40,6 +40,8 @@ def parse_args():
                         help='FP16 추론 비활성화 (FP32 사용)')
     parser.add_argument('--roi-config', type=str, default='config/roi_config.json',
                         help='ROI 설정 파일 경로')
+    parser.add_argument('--inference-fps', type=int, default=None,
+                        help='Inference FPS 제한 (기본값: 카메라 FPS와 동일)')
     return parser.parse_args()
 
 
@@ -87,7 +89,8 @@ def main():
         logger.error("카메라 시작 실패. 종료합니다.")
         sys.exit(1)
 
-    init_app(camera, detector, roi_mgr)
+    init_app(camera, detector, roi_mgr,
+             inference_fps=args.inference_fps or args.fps)
 
     logger.info(f"서버 시작: http://{args.host}:{args.port}")
     try:
