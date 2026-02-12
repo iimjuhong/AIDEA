@@ -151,11 +151,10 @@ def _inference_loop():
                 _frame_buf.put(buffer.tobytes())
                 error_count = 0
 
-            # FPS 조절
+            # FPS 조절 — 최소 1ms sleep으로 GIL 양보 보장
             elapsed = time.monotonic() - t0
-            sleep_time = target_interval - elapsed
-            if sleep_time > 0:
-                time.sleep(sleep_time)
+            sleep_time = max(target_interval - elapsed, 0.001)
+            time.sleep(sleep_time)
 
         except Exception as e:
             error_count += 1
