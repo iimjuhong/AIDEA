@@ -131,6 +131,8 @@ class ROIManager:
     def count_per_roi(self, detections):
         """각 ROI에 포함된 검출 수를 반환한다.
 
+        cv2.pointPolygonTest (C++) 사용으로 GIL 해제 + 성능 향상.
+
         Args:
             detections: list of {'bbox': [x1,y1,x2,y2], ...}
 
@@ -141,11 +143,12 @@ class ROIManager:
             rois = list(self._rois)
         counts = {}
         for roi in rois:
-            polygon = roi["points"]
+            contour = np.array(roi["points"], dtype=np.float32).reshape(-1, 1, 2)
             count = 0
             for det in detections:
-                cx, cy = self._get_bottom_center(det["bbox"])
-                if self._point_in_polygon(cx, cy, polygon):
+                pt = self._get_bottom_center(det["bbox"])
+                # cv2.pointPolygonTest: C++에서 실행되므로 GIL 해제
+                if cv2.pointPolygonTest(contour, pt, False) >= 0:
                     count += 1
             counts[roi["name"]] = count
         return counts
@@ -160,11 +163,11 @@ class ROIManager:
             rois = list(self._rois)
         result = {}
         for roi in rois:
-            polygon = roi["points"]
+            contour = np.array(roi["points"], dtype=np.float32).reshape(-1, 1, 2)
             matched = []
             for det in detections:
-                cx, cy = self._get_bottom_center(det["bbox"])
-                if self._point_in_polygon(cx, cy, polygon):
+                pt = self._get_bottom_center(det["bbox"])
+                if cv2.pointPolygonTest(contour, pt, False) >= 0:
                     matched.append(det)
             result[roi["name"]] = matched
         return result
@@ -226,6 +229,10 @@ class ROIManager:
 
     @staticmethod
     def _get_bottom_center(bbox):
-        """bbox [x1, y1, x2, y2]의 하단 중심점을 반환한다."""
+        """bbox [x1, y1, x2, y2]의 하단 중심점을 반환한다.
+
+        Returns:
+            (float, float) — cv2.pointPolygonTest 호환 좌표
+        """
         x1, y1, x2, y2 = bbox
-        return (x1 + x2) // 2, y2
+        return (float(x1 + x2) / 2.0, float(y2))
