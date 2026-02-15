@@ -1,10 +1,87 @@
 # ⚡ 빠른 실행 가이드 (QUICKSTART)
 
+> 복잡한 README는 넘어! 바로 실행하려면 이 문서만 보세요.
+
+---
+
+## 🐍 가상환경 설정 (권장)
+
+프로젝트별로 독립된 환경을 만들어 패키지 충돌을 방지합니다.
+
+### 방법 1: venv 사용 (Python 내장)
+
+```bash
+# 프로젝트 폴더로 이동
+cd /home/iimjuhong/projects/aidea
+
+# 가상환경 생성
+python3 -m venv venv
+
+# 가상환경 활성화
+source venv/bin/activate
+
+# 활성화되면 프롬프트에 (venv) 표시됨
+# (venv) user@jetson:~/projects/aidea$
+
+# 의존성 설치 (가상환경 안에서)
+pip install -r requirements.txt
+
+# 작업 완료 후 비활성화
+deactivate
+```
+
+### 방법 2: conda 사용 (Anaconda/Miniconda 설치 시)
+
+```bash
+# 가상환경 생성 (Python 3.10)
+conda create -n aidea python=3.10 -y
+
+# 가상환경 활성화
+conda activate aidea
+
+# 의존성 설치
+pip install -r requirements.txt
+
+# 작업 완료 후 비활성화
+conda deactivate
+```
+
+### ⚠️ 가상환경 활성화 확인
+
+```bash
+# Python 경로 확인 (가상환경 경로여야 함)
+which python3
+
+# 예상 출력:
+# venv 사용: /home/iimjuhong/projects/aidea/venv/bin/python3
+# conda 사용: /home/iimjuhong/anaconda3/envs/aidea/bin/python3
+```
+
 ---
 
 ## 🎯 시나리오별 명령어
 
 ### 1️⃣ 처음 시작할 때 (최초 1회만)
+
+**🔴 가상환경 사용하는 경우:**
+
+```bash
+# 1. 프로젝트 폴더로 이동
+cd /home/iimjuhong/projects/aidea
+
+# 2. 가상환경 생성 및 활성화 (위 섹션 참조)
+source venv/bin/activate  # venv 사용 시
+# 또는
+conda activate aidea      # conda 사용 시
+
+# 3. 의존성 설치
+pip install -r requirements.txt
+
+# 4. YOLO 모델 다운로드
+bash scripts/download_model.sh
+```
+
+**⚪ 가상환경 없이 (전역 설치):**
 
 ```bash
 # 프로젝트 폴더로 이동
@@ -22,10 +99,13 @@ bash scripts/download_model.sh
 ### 2️⃣ 기본 실행 (카메라 + YOLO만)
 
 ```bash
-# 프로젝트 폴더에서
+# 1. 프로젝트 폴더에서
 cd /home/iimjuhong/projects/aidea
 
-# 실행
+# 2. 가상환경 활성화 (가상환경 사용 시)
+source venv/bin/activate  # 또는 conda activate aidea
+
+# 3. 실행
 python3 main.py
 
 # 웹 UI 접속
@@ -39,6 +119,9 @@ python3 main.py
 ### 3️⃣ 대기시간 측정 실행 (AWS 없이)
 
 ```bash
+# 가상환경 활성화 (가상환경 사용 시)
+source venv/bin/activate  # 또는 conda activate aidea
+
 # ROI 설정이 필요합니다 (웹 UI에서 먼저 설정)
 python3 main.py --start-roi "대기구역"
 
@@ -83,6 +166,10 @@ nano config/aws_config.json
 #### Step 3: 실행
 
 ```bash
+# 가상환경 활성화 (가상환경 사용 시)
+source venv/bin/activate  # 또는 conda activate aidea
+
+# 실행
 python3 main.py --start-roi "대기구역" --end-roi "카운터"
 ```
 
@@ -177,8 +264,11 @@ sudo usermod -aG video $USER
 
 ## 💡 팁
 
-### 백그라운드 실행
+### 가상환경에서 백그라운드 실행
 ```bash
+# 가상환경 활성화
+source venv/bin/activate  # 또는 conda activate aidea
+
 # nohup으로 백그라운드 실행
 nohup python3 main.py --start-roi "대기구역" > output.log 2>&1 &
 
@@ -215,6 +305,9 @@ config/
 ## 🎬 가장 많이 쓰는 명령어 TOP 3
 
 ```bash
+# 0위: 가상환경 활성화 (매번 필수!)
+source venv/bin/activate  # 또는 conda activate aidea
+
 # 1위: 기본 실행
 python3 main.py
 
