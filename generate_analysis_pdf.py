@@ -68,8 +68,8 @@ aidea/
 │   ├── roi_config.json              # ROI 다각형 설정
 │   └── aws_config.json              # DynamoDB 설정 (Phase 6)
 ├── models/
-│   ├── yolov8n.onnx                 # YOLOv8n ONNX 모델
-│   └── yolov8n_fp16.engine          # TensorRT FP16 캐시
+│   ├── yolov8s.onnx                 # YOLOv8s ONNX 모델
+│   └── yolov8s_fp16.engine          # TensorRT FP16 캐시
 ├── src/
 │   ├── core/
 │   │   ├── camera.py                # CSI 카메라 관리 (217줄)
@@ -123,7 +123,7 @@ aidea/
 |------|--------|------|
 | `--host` | 0.0.0.0 | 서버 바인드 주소 |
 | `--port` | 5000 | 서버 포트 |
-| `--model` | models/yolov8n.onnx | YOLO 모델 경로 |
+| `--model` | models/yolov8s.onnx | YOLO 모델 경로 |
 | `--conf-threshold` | 0.5 | 검출 신뢰도 임계값 |
 | `--start-roi` | None | 대기시간 측정 시작 ROI 이름 |
 | `--end-roi` | None | 대기시간 측정 종료 ROI 이름 |
@@ -335,8 +335,8 @@ YOLOv8 출력 형태: `[1, 84, 8400]`
 ONNX → TensorRT 변환은 Jetson에서 수분이 소요된다. 따라서 한 번 빌드한 엔진을 파일로 캐싱한다:
 
 ```
-yolov8n.onnx → yolov8n_fp16.engine (FP16)
-yolov8n.onnx → yolov8n_fp32.engine (FP32)
+yolov8s.onnx → yolov8s_fp16.engine (FP16)
+yolov8s.onnx → yolov8s_fp32.engine (FP32)
 ```
 
 캐시 파일이 존재하면 `_load_engine()`으로 즉시 로드한다.

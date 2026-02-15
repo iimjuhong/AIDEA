@@ -1,11 +1,11 @@
 #!/bin/bash
-# YOLOv8n ONNX 모델 다운로드 스크립트
+# YOLOv8s ONNX 모델 다운로드 스크립트
 set -e
 
 MODEL_DIR="$(cd "$(dirname "$0")/.." && pwd)/models"
-MODEL_FILE="$MODEL_DIR/yolov8n.onnx"
-URL="https://github.com/ultralytics/assets/releases/download/v8.3.0/yolov8n.onnx"
-MIN_SIZE=1000000  # 최소 1MB — 정상 파일은 ~12MB
+MODEL_FILE="$MODEL_DIR/yolov8s.onnx"
+URL="https://github.com/ultralytics/assets/releases/download/v8.3.0/yolov8s.onnx"
+MIN_SIZE=1000000  # 최소 1MB — 정상 파일은 ~22MB
 
 mkdir -p "$MODEL_DIR"
 
@@ -21,7 +21,7 @@ if [ -f "$MODEL_FILE" ]; then
     fi
 fi
 
-echo "[INFO] YOLOv8n ONNX 모델 다운로드 중..."
+echo "[INFO] YOLOv8s ONNX 모델 다운로드 중..."
 echo "[INFO] URL: $URL"
 
 if command -v wget &> /dev/null; then

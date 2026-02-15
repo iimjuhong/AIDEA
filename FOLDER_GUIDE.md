@@ -9,6 +9,10 @@
 ```
 aidea/
 ├── 📄 main.py                    # 프로그램 진입점 (여기서 시작!)
+├── 📄 test_youtube_pipeline.py  # YouTube 영상 E2E 테스트
+├── 📄 test_local_video.py       # 로컬 비디오 테스트
+├── 📄 test_dynamodb_send.py     # DynamoDB 더미 전송 테스트
+├── 📄 visualize_detection.py    # 검출 결과 시각화
 ├── 📄 requirements.txt           # Python 패키지 의존성
 ├── 📄 QUICKSTART.md             # 빠른 실행 가이드
 ├── 📄 README.md                 # 전체 프로젝트 문서
@@ -129,8 +133,8 @@ config/
 
 ```
 models/
-└── yolov8n.onnx          # 🤖 YOLO 모델 (ONNX 형식)
-    yolov8n.engine        # ⚡ TensorRT 엔진 (자동 생성)
+└── yolov8s.onnx          # 🤖 YOLO 모델 (ONNX 형식)
+    yolov8s.engine        # ⚡ TensorRT 엔진 (자동 생성)
 ```
 
 **역할**:
@@ -144,12 +148,15 @@ models/
 
 ```
 data/
+├── *.mp4                 # 🎬 YouTube 다운로드 영상 (테스트용)
+├── youtube_first_frame.jpg # 🖼️ 첫 프레임 캡처 (ROI 좌표 확인용)
 ├── snapshots/            # 📸 스냅샷 이미지 (Phase 7 예정)
 └── statistics/           # 📊 통계 데이터 (Phase 7 예정)
 ```
 
 **역할**:
-- 현재는 비어있음
+- YouTube 테스트 영상 다운로드 저장
+- ROI 설정을 위한 첫 프레임 캡처
 - 향후 로컬 데이터 백업용
 
 ---
@@ -273,7 +280,7 @@ logs/
 - `venv/` - 가상환경 (삭제 후 재생성 가능)
 - `__pycache__/` - Python 캐시 (자동 생성)
 - `.pytest_cache/` - pytest 캐시
-- `models/yolov8n.engine` - TensorRT 엔진 (자동 생성)
+- `models/yolov8s.engine` - TensorRT 엔진 (자동 생성)
 - `.git/` - Git 버전 관리
 
 ---

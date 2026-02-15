@@ -34,7 +34,7 @@ def parse_args():
     parser.add_argument('--sensor-id', type=int, default=0, help='CSI 센서 ID')
     parser.add_argument('--flip', type=int, default=0,
                         help='영상 회전 (0=없음, 2=180도)')
-    parser.add_argument('--model', type=str, default='models/yolov8n.onnx',
+    parser.add_argument('--model', type=str, default='models/yolov8s.onnx',
                         help='YOLOv8 ONNX 모델 경로')
     parser.add_argument('--conf-threshold', type=float, default=0.5,
                         help='검출 신뢰도 임계값')
