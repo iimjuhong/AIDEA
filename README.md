@@ -174,7 +174,7 @@ NVIDIA Jetson Orin Super Nano 기반 실시간 식당 대기열 추적 및 대�
 ```json
 {
   "restaurant_id": "hanyang_plaza",
-  "corner_id": "korean",
+  "corner_id": "western",
   "queue_count": 15,
   "est_wait_time_min": 8,
   "timestamp": 1770349800000
@@ -184,10 +184,10 @@ NVIDIA Jetson Orin Super Nano 기반 실시간 식당 대기열 추적 및 대�
 **DynamoDB 저장 (camelCase)**:
 ```json
 {
-  "pk": "CORNER#hanyang_plaza#korean",
+  "pk": "CORNER#hanyang_plaza#western",
   "sk": "1770349800000",
   "restaurantId": "hanyang_plaza",
-  "cornerId": "korean",
+  "cornerId": "western",
   "queueLen": 15,
   "estWaitTimeMin": 8,
   "dataType": "observed",
@@ -271,7 +271,7 @@ NVIDIA Jetson Orin Super Nano 기반 실시간 식당 대기열 추적 및 대�
 │  - ROI CRUD      │      │  - TTL 설정             │
 └────────┬─────────┘      └──────────┬───────────────┘
          ↓                           ↓
-   브라우저 (웹 UI)       AWS DynamoDB (hyeat_YOLO_data)
+   브라우저 (웹 UI)       AWS DynamoDB (hyeat-waiting-data-dev)
                                      ↓
                             웹 대시보드 (Phase 7 예정)
 ```
@@ -452,7 +452,7 @@ curl http://localhost:5000/api/dynamodb/stats
 **AWS CLI 사용**:
 ```bash
 aws dynamodb create-table \
-  --table-name hyeat_YOLO_data \
+  --table-name hyeat-waiting-data-dev \
   --attribute-definitions \
     AttributeName=pk,AttributeType=S \
     AttributeName=sk,AttributeType=S \
@@ -467,7 +467,7 @@ aws dynamodb create-table \
 1. DynamoDB 콘솔 접속
 2. "Create table" 클릭
 3. 설정:
-   - **Table name**: `hyeat_YOLO_data`
+   - **Table name**: `hyeat-waiting-data-dev`
    - **Partition key**: `pk` (String)
    - **Sort key**: `sk` (String)
    - **Billing mode**: On-demand
@@ -476,7 +476,7 @@ aws dynamodb create-table \
 
 ```bash
 aws dynamodb update-time-to-live \
-  --table-name hyeat_YOLO_data \
+  --table-name hyeat-waiting-data-dev \
   --time-to-live-specification \
     "Enabled=true, AttributeName=ttl" \
   --region ap-northeast-2
@@ -487,9 +487,9 @@ aws dynamodb update-time-to-live \
 ```json
 {
   "region": "ap-northeast-2",
-  "table_name": "hyeat_YOLO_data",
+  "table_name": "hyeat-waiting-data-dev",
   "restaurant_id": "hanyang_plaza",
-  "corner_id": "korean"
+  "corner_id": "western"
 }
 ```
 
@@ -979,7 +979,7 @@ curl https://dynamodb.ap-northeast-2.amazonaws.com
 **원인 3**: 테이블 없음
 ```bash
 # 테이블 존재 확인
-aws dynamodb describe-table --table-name hyeat-waiting-data --region ap-northeast-2
+aws dynamodb describe-table --table-name hyeat-waiting-data-dev --region ap-northeast-2
 
 # 테이블 생성 (상세 설정 가이드 참조)
 ```
@@ -1099,7 +1099,7 @@ cat config/roi_config.json | python3 -m json.tool
 - **비동기 배치 전송**: 최대 25개 아이템
 - **자동 재시도**: Exponential backoff
 - **데이터 변환**: snake_case ↔ camelCase
-- **TTL 자동 설정**: 30일 후 자동 삭제
+- **TTL 자동 설정**: 3일 후 자동 삭제
 
 ### 🛡️ 안정성
 - **Graceful Degradation**: DynamoDB 오류 시에도 시스템 정상 동작
@@ -1119,4 +1119,7 @@ MIT License
 
 상세한 아키텍처 설계 및 개발 계획은 다음 문서 참조:
 - `식당_대기시간_추정_시스템_설계서_v2.pdf`
-- 향후 Phase 계획: 별도 문서 참조
+- [빠른 실행 가이드](QUICKSTART.md)
+- [폴더 구조 가이드](FOLDER_GUIDE.md)
+- [3-Thread 아키텍처 가이드](docs/3-Thread_Architecture_Guide.md)
+- [대기시간 알고리즘 가이드](docs/Phase5_대기시간_알고리즘_가이드.md)
