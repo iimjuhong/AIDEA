@@ -155,7 +155,7 @@ NVIDIA Jetson Orin Super Nano 기반 실시간 식당 대기열 추적 및 대�
   - Python snake_case → DynamoDB camelCase 자동 변환
   - PK/SK 자동 생성: `CORNER#{restaurant_id}#{corner_id}` / `{timestamp}`
   - ISO 8601 타임스탬프 (KST, +09:00)
-  - TTL 자동 설정 (30일 후 자동 삭제)
+  - TTL 자동 설정 (3일 후 자동 삭제)
   
 - **전송 전략**
   - 주기적 전송: 10초마다 자동 전송
@@ -194,7 +194,7 @@ NVIDIA Jetson Orin Super Nano 기반 실시간 식당 대기열 추적 및 대�
   "source": "jetson_nano",
   "timestampIso": "2026-02-15T17:00:00+09:00",
   "createdAtIso": "2026-02-15T17:00:01+09:00",
-  "ttl": 1772941800
+  "ttl": 1770609000
 }
 ```
 
@@ -271,7 +271,7 @@ NVIDIA Jetson Orin Super Nano 기반 실시간 식당 대기열 추적 및 대�
 │  - ROI CRUD      │      │  - TTL 설정             │
 └────────┬─────────┘      └──────────┬───────────────┘
          ↓                           ↓
-   브라우저 (웹 UI)       AWS DynamoDB (hyeat-waiting-data)
+   브라우저 (웹 UI)       AWS DynamoDB (hyeat_YOLO_data)
                                      ↓
                             웹 대시보드 (Phase 7 예정)
 ```
@@ -452,7 +452,7 @@ curl http://localhost:5000/api/dynamodb/stats
 **AWS CLI 사용**:
 ```bash
 aws dynamodb create-table \
-  --table-name hyeat-waiting-data \
+  --table-name hyeat_YOLO_data \
   --attribute-definitions \
     AttributeName=pk,AttributeType=S \
     AttributeName=sk,AttributeType=S \
@@ -467,7 +467,7 @@ aws dynamodb create-table \
 1. DynamoDB 콘솔 접속
 2. "Create table" 클릭
 3. 설정:
-   - **Table name**: `hyeat-waiting-data`
+   - **Table name**: `hyeat_YOLO_data`
    - **Partition key**: `pk` (String)
    - **Sort key**: `sk` (String)
    - **Billing mode**: On-demand
@@ -476,7 +476,7 @@ aws dynamodb create-table \
 
 ```bash
 aws dynamodb update-time-to-live \
-  --table-name hyeat-waiting-data \
+  --table-name hyeat_YOLO_data \
   --time-to-live-specification \
     "Enabled=true, AttributeName=ttl" \
   --region ap-northeast-2
@@ -487,7 +487,7 @@ aws dynamodb update-time-to-live \
 ```json
 {
   "region": "ap-northeast-2",
-  "table_name": "hyeat-waiting-data",
+  "table_name": "hyeat_YOLO_data",
   "restaurant_id": "hanyang_plaza",
   "corner_id": "korean"
 }

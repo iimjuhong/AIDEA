@@ -18,7 +18,7 @@
  *   source: "jetson_nano",
  *   timestampIso: "2026-02-15T17:00:00+09:00",
  *   createdAtIso: "2026-02-15T17:00:01+09:00",
- *   ttl: 1772941800,
+ *   ttl: 1770609000,
  * };
  * ```
  */
@@ -48,7 +48,7 @@ interface DdbWaitingItem {
   // [Meta Data]
 
   /** 데이터 타입: 실측값 | 예측값 | 더미 */
-  dataType: "observed" | "predicted" | "dummy";
+  dataType: "observed" | "prediction" | "dummy";
 
   /** 데이터 소스 (예: "jetson_nano") */
   source?: string;

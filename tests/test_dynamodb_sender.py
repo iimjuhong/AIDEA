@@ -116,10 +116,10 @@ class TestTransform(unittest.TestCase):
         item = self.sender._transform(_sample_data())
         self.assertIn('+09:00', item['createdAtIso'])
 
-    def test_ttl_30_days(self):
+    def test_ttl_3_days(self):
         data = _sample_data(timestamp_ms=1770349800000)
         item = self.sender._transform(data)
-        expected_ttl = 1770349800 + (30 * 24 * 60 * 60)
+        expected_ttl = 1770349800 + (3 * 24 * 60 * 60)
         self.assertEqual(item['ttl'], expected_ttl)
 
     def test_default_restaurant_corner_from_config(self):

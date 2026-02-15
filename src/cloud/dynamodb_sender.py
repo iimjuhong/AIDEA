@@ -6,7 +6,7 @@ Phase 6: Jetson Orin Nano에서 측정한 대기시간 데이터를 AWS DynamoDB
   - snake_case 입력 → camelCase DynamoDB 아이템 변환
   - PK/SK 자동 생성
   - ISO 8601 타임스탬프 (KST, +09:00)
-  - TTL 자동 계산 (30일)
+  - TTL 자동 계산 (3일)
   - 배치 쓰기 (최대 25개 아이템)
   - Exponential backoff 재시도
 
@@ -27,7 +27,7 @@ from datetime import datetime, timezone, timedelta
 logger = logging.getLogger(__name__)
 
 _KST = timezone(timedelta(hours=9))
-_TTL_DAYS = 30
+_TTL_DAYS = 3
 _MAX_BATCH_SIZE = 25
 _MAX_RETRIES = 3
 _BASE_DELAY = 0.5  # 초
@@ -197,7 +197,7 @@ class DynamoDBSender:
         now_kst = datetime.now(tz=_KST)
         created_at_iso = now_kst.isoformat()
 
-        # TTL: 원본 타임스탬프 + 30일 (epoch 초 단위)
+        # TTL: 원본 타임스탬프 + 3일 (epoch 초 단위)
         ttl = int(timestamp_sec) + (_TTL_DAYS * 24 * 60 * 60)
 
         return {
