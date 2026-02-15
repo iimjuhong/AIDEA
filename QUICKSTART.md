@@ -157,7 +157,7 @@ nano config/aws_config.json
 # 내용 확인/수정:
 # {
 #   "region": "ap-northeast-2",
-#   "table_name": "hyeat_YOLO_data",
+#   "table_name": "hyeat-waiting-data-dev",
 #   "restaurant_id": "hanyang_plaza",
 #   "corner_id": "western"
 # }
@@ -297,8 +297,9 @@ config/
 ## 📚 더 자세한 내용이 필요하면?
 
 - **전체 문서**: [README.md](README.md)
+- **폴더 구조 가이드**: [FOLDER_GUIDE.md](FOLDER_GUIDE.md)
 - **대기시간 알고리즘**: [docs/Phase5_대기시간_알고리즘_가이드.md](docs/Phase5_대기시간_알고리즘_가이드.md)
-- **프로젝트 구조**: README.md의 "프로젝트 구조" 섹션
+- **3-Thread 아키텍처**: [docs/3-Thread_Architecture_Guide.md](docs/3-Thread_Architecture_Guide.md)
 
 ---
 
