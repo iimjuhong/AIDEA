@@ -148,7 +148,7 @@ def main():
         sys.exit(1)
 
     # 비디오 FPS를 inference FPS 기본값으로 사용
-    inference_fps = args.inference_fps or int(video_src._fps)
+    inference_fps = args.inference_fps or int(video_src.fps)
 
     init_app(video_src, detector, roi_mgr, tracker,
              inference_fps=inference_fps,

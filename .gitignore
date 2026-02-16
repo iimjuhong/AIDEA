@@ -55,6 +55,12 @@ test_*.py
 visualize_detection.py
 video_viewer.py
 
+# Test video files
+test/*.mp4
+test/*.avi
+test/*.mov
+test/*.mkv
+
 # Temporary files
 *.tmp
 *.bak
@@ -78,3 +84,7 @@ get_roi_coords_web.py
 slowmo_video.py
 TEST_COMMANDS.md
 TEST_DYNAMODB.md
+
+# ROI Configs (Video specific)
+config/roi_*.json
+!config/roi_config.json

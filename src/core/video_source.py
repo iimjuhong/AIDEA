@@ -115,6 +115,11 @@ class VideoFileManager:
         logger.info("비디오 소스 중지 완료")
 
     @property
+    def fps(self):
+        """비디오 원본 FPS"""
+        return self._fps
+
+    @property
     def is_running(self):
         return self._running
 
