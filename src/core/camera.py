@@ -115,10 +115,28 @@ class CameraManager:
 
         return True
 
+    @staticmethod
+    def _is_green_frame(frame, threshold=0.85):
+        """프레임이 녹색(ISP 미초기화)인지 판별
+
+        NV12 초기값(Y=0,UV=128)이 BGR 변환 시 약 (0,128,0) 녹색이 됨.
+        녹색 채널이 지배적인 픽셀 비율이 threshold 이상이면 녹색 프레임으로 판정.
+        """
+        import numpy as np
+        g = frame[:, :, 1].astype(int)
+        r = frame[:, :, 2].astype(int)
+        b = frame[:, :, 0].astype(int)
+        green_dominant = (g > 50) & (g > r + 30) & (g > b + 30)
+        ratio = np.count_nonzero(green_dominant) / green_dominant.size
+        return ratio > threshold
+
     def _capture_loop(self):
         """백그라운드 프레임 캡처 루프 (자동 재연결 포함)"""
         fail_count = 0
         MAX_FAILS = 30  # 연속 실패 시 카메라 재연결 시도
+        WARMUP_FRAMES = 15  # ISP 워밍업 - 초기 프레임 폐기
+        warmup_count = 0
+        green_count = 0
 
         while self._running:
             ret, frame = self._cap.read()
@@ -128,9 +146,31 @@ class CameraManager:
                     logger.warning(f"프레임 읽기 {fail_count}회 연속 실패 — 카메라 재연결 시도")
                     self._reconnect()
                     fail_count = 0
+                    warmup_count = 0
                 time.sleep(0.01)
                 continue
             fail_count = 0
+
+            # ISP 워밍업: 초기 프레임 폐기
+            if warmup_count < WARMUP_FRAMES:
+                warmup_count += 1
+                if warmup_count == WARMUP_FRAMES:
+                    logger.info(f"카메라 워밍업 완료 ({WARMUP_FRAMES}프레임 폐기)")
+                continue
+
+            # 녹색 프레임 감지 (ISP 미초기화 상태)
+            if self._is_green_frame(frame):
+                green_count += 1
+                if green_count <= 5 or green_count % 50 == 0:
+                    logger.warning(f"녹색 프레임 감지 ({green_count}회) — 카메라 센서/CSI 연결 확인 필요")
+                if green_count == 100:
+                    logger.error("녹색 프레임 100회 연속 — 카메라 재연결 시도")
+                    self._reconnect()
+                    warmup_count = 0
+                    green_count = 0
+                continue
+
+            green_count = 0
             with self._lock:
                 self._frame = frame
 
